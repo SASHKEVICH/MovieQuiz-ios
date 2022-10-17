@@ -49,6 +49,9 @@ final class MovieQuizViewController: UIViewController {
     ]
     private var currentQuestionIndex: Int = 0
     private var correctAnswers: Int = 0
+    private var isLastQuestion: Bool {
+        currentQuestionIndex == questions.count - 1
+    }
         
     // MARK: - Lifecycle
     override func viewDidLoad() {
@@ -85,7 +88,7 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func showNextQuestionOrResults() {
-        if !isLastQuestion() {
+        if !isLastQuestion {
             currentQuestionIndex += 1
             prepareView()
             return
@@ -98,15 +101,11 @@ final class MovieQuizViewController: UIViewController {
         correctAnswers = 0
     }
     
-    private func isLastQuestion() -> Bool {
-        currentQuestionIndex == questions.count - 1
-    }
-    
     private func prepareView() {
         let currentQuestion = questions[currentQuestionIndex]
-        let vm = convert(model: currentQuestion)
+        let viewModel = convert(model: currentQuestion)
+        show(quiz: viewModel)
         imageView.layer.borderWidth = 0
-        show(quiz: vm)
     }
     
     private func showAnswerResults(isCorrect: Bool) {
