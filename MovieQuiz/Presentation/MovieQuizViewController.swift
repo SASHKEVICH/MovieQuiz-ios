@@ -4,6 +4,8 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet private weak var questionLabel: UILabel!
     @IBOutlet private weak var counterLabel: UILabel!
     @IBOutlet private weak var imageView: UIImageView!
+    @IBOutlet weak var noButton: UIButton!
+    @IBOutlet weak var yesButton: UIButton!
     
     private let questions: [QuizQuestion] = [
         QuizQuestion(
@@ -114,7 +116,9 @@ final class MovieQuizViewController: UIViewController {
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
         imageView.layer.cornerRadius = 20
         
+        toggleButtons(state: false)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            self.toggleButtons(state: true)
             self.showNextQuestionOrResults()
         }
     }
@@ -132,6 +136,16 @@ final class MovieQuizViewController: UIViewController {
             image: image,
             question: model.text,
             questionNumber: "\(currentQuestionIndex + 1)/\(questions.count)")
+    }
+    
+    private func toggleButtons(state: Bool) {
+        noButton.isEnabled = state
+        yesButton.isEnabled = state
+        
+        UIView.animate(withDuration: 0.5, delay: 0.0, animations: {
+            self.noButton.backgroundColor = state ? .white : .lightGray
+            self.yesButton.backgroundColor = state ? .white : .lightGray
+        }, completion: nil)
     }
 }
 
