@@ -16,10 +16,11 @@ class AlertPresenter {
     }
     
     func requestPresentAlert(_ alertModel: AlertModel) {
-        show(result: alertModel)
+        let alert = prepareAlert(for: alertModel)
+        delegate?.didRecieveAlert(alert: alert)
     }
     
-    private func show(result: AlertModel) {
+    private func prepareAlert(for result: AlertModel) -> UIAlertController {
         let alert = UIAlertController(
             title: result.title,
             message: result.message,
@@ -29,6 +30,6 @@ class AlertPresenter {
                                         style: .default,
                                         handler: result.completion)
         alert.addAction(alertAction)
-        delegate?.didRecieveAlert(alert: alert)
+        return alert
     }
 }

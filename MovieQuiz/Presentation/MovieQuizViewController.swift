@@ -67,25 +67,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         counterLabel.text = step.questionNumber
     }
     
-    private func showNextQuestionOrResults() {
-        if !isLastQuestion {
-            currentQuestionIndex += 1
-            questionFactory?.requestNextQuestion()
-            return
-        }
-        let alertModel = AlertModel(
-            title: "Этот раунд окончен!",
-            message: "Ваш результат \(correctAnswers)/10",
-            buttonText: "Сыграть еще раз",
-            completion: { [weak self] _ in
-                guard let self = self else { return }
-                self.currentQuestionIndex = 0
-                self.questionFactory?.requestNextQuestion()
-            })
-        alertPresenter?.requestPresentAlert(alertModel)
-        correctAnswers = 0
-    }
-    
     private func prepareView(question: QuizQuestion) {
         currentQuestion = question
         let viewModel = convert(model: question)
@@ -105,8 +86,31 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             self.toggleButtons(state: true)
-            self.showNextQuestionOrResults()
+            if !self.isLastQuestion {
+                self.showNextQuestion()
+                return
+            }
+            self.showResults()
         }
+    }
+    
+    private func showNextQuestion() {
+        currentQuestionIndex += 1
+        questionFactory?.requestNextQuestion()
+    }
+    
+    private func showResults() {
+        let alertModel = AlertModel(
+            title: "Этот раунд окончен!",
+            message: "Ваш результат \(correctAnswers)/10",
+            buttonText: "Сыграть еще раз",
+            completion: { [weak self] _ in
+                guard let self = self else { return }
+                self.currentQuestionIndex = 0
+                self.questionFactory?.requestNextQuestion()
+            })
+        alertPresenter?.requestPresentAlert(alertModel)
+        correctAnswers = 0
     }
     
     private func verifyCorrectness(statement: Bool) {
