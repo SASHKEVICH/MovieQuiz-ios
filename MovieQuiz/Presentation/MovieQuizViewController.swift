@@ -22,11 +22,24 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        prepareView()
         alertPresenter = AlertPresenter(delegate: self)
         
         questionFactory = QuestionFactory(delegate: self)
         questionFactory?.requestNextQuestion()
+        
+        let fileManager = FileManager.default
+        var documentUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let textFile = "top250MoviesIMDB.json"
+        documentUrl.appendPathComponent(textFile)
+        
+        let jsonString = try! String(contentsOf: documentUrl)
+        let data = jsonString.data(using: .utf8)!
+        
+        do {
+            let movies = try JSONDecoder().decode(Top.self, from: data)
+        } catch {
+            print("failed to parse: \(error)")
+        }
     }
 
     @IBAction private func noButtonClicked(_ sender: UIButton) {
