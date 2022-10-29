@@ -24,6 +24,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         super.viewDidLoad()
         prepareView()
         alertPresenter = AlertPresenter(delegate: self)
+        
+        questionFactory = QuestionFactory(delegate: self)
+        questionFactory?.requestNextQuestion()
     }
 
     @IBAction private func noButtonClicked(_ sender: UIButton) {
