@@ -27,19 +27,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         questionFactory = QuestionFactory(delegate: self)
         questionFactory?.requestNextQuestion()
         
-        let fileManager = FileManager.default
-        var documentUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let textFile = "top250MoviesIMDB.json"
-        documentUrl.appendPathComponent(textFile)
-        
-        let jsonString = try! String(contentsOf: documentUrl)
-        let data = jsonString.data(using: .utf8)!
-        
-        do {
-            let movies = try JSONDecoder().decode(Top.self, from: data)
-        } catch {
-            print("failed to parse: \(error)")
-        }
     }
 
     @IBAction private func noButtonClicked(_ sender: UIButton) {
@@ -136,5 +123,21 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
             self.noButton.backgroundColor = state ? .white : .lightGray
             self.yesButton.backgroundColor = state ? .white : .lightGray
         }, completion: nil)
+    }
+    
+    private func decodeMoviesFromFile() {
+        let fileManager = FileManager.default
+        var documentUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let textFile = "top250MoviesIMDB.json"
+        documentUrl.appendPathComponent(textFile)
+        
+        let jsonString = try! String(contentsOf: documentUrl)
+        let data = jsonString.data(using: .utf8)!
+        
+        do {
+            let movies = try JSONDecoder().decode(Top.self, from: data)
+        } catch {
+            print("failed to parse: \(error)")
+        }
     }
 }
