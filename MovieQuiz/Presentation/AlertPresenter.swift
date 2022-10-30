@@ -15,7 +15,12 @@ class AlertPresenter {
         self.delegate = delegate
     }
     
-    func requestPresentAlert(_ alertModel: AlertModel) {
+    func requestPresentAlert(_ resultModel: QuizResultViewModel, completion: @escaping (UIAlertAction) -> Void) {
+        let alertModel = AlertModel(
+            title: resultModel.title,
+            message: resultModel.text,
+            buttonText: resultModel.buttonText,
+            completion: completion)
         let alert = prepareAlert(for: alertModel)
         delegate?.didRecieveAlert(alert: alert)
     }

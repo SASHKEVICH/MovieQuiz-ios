@@ -9,6 +9,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     
     private var alertPresenter: AlertPresenter?
     private var questionFactory: QuestionFactoryProtocol?
+    private var statisticService: StatisticService?
     private let questionsAmount = 10
     private var currentQuestion: QuizQuestion?
     
@@ -27,6 +28,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         questionFactory = QuestionFactory(delegate: self)
         questionFactory?.requestNextQuestion()
         
+        statisticService = StatisticService()
     }
 
     @IBAction private func noButtonClicked(_ sender: UIButton) {
@@ -87,16 +89,26 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     }
     
     private func showResults() {
-        let alertModel = AlertModel(
+        guard let statisticService = statisticService else { return }
+        statisticService.store(correct: correctAnswers, total: questionsAmount)
+        
+        let bestGame = statisticService.bestGame
+        let resultModel = QuizResultViewModel(
             title: "Этот раунд окончен!",
-            message: "Ваш результат \(correctAnswers)/10",
-            buttonText: "Сыграть еще раз",
-            completion: { [weak self] _ in
-                guard let self = self else { return }
-                self.currentQuestionIndex = 0
-                self.questionFactory?.requestNextQuestion()
-            })
-        alertPresenter?.requestPresentAlert(alertModel)
+            text:
+            """
+                Ваш результат \(correctAnswers)/10
+                Количество сыгранных квизов: \(statisticService.gamesCount)
+                Рекорд \(bestGame.correct)/\(bestGame.total) (\(bestGame.date.formatTo("dd.MM.yy HH:mm")))
+                Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy * 100))%
+            """,
+            buttonText: "Сыграть еще раз"
+        )
+        alertPresenter?.requestPresentAlert(resultModel) { [weak self] _ in
+            guard let self = self else { return }
+            self.currentQuestionIndex = 0
+            self.questionFactory?.requestNextQuestion()
+        }
         correctAnswers = 0
     }
     
