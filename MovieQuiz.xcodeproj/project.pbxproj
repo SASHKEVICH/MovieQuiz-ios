@@ -10,7 +10,6 @@
 		961CA6EF290D674C005855F4 /* StatisticService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961CA6EE290D674C005855F4 /* StatisticService.swift */; };
 		961CA6F1290D678A005855F4 /* StatisticServiceProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961CA6F0290D678A005855F4 /* StatisticServiceProtocol.swift */; };
 		961CA6F3290D6883005855F4 /* GameRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961CA6F2290D6883005855F4 /* GameRecord.swift */; };
-		961CA6F5290EAF0A005855F4 /* Date+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961CA6F4290EAF0A005855F4 /* Date+Formatting.swift */; };
 		964F19D6290D556600BA4D0C /* ParseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F19D5290D556600BA4D0C /* ParseError.swift */; };
 		969767D428F873F800802884 /* YS Display-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 969767D228F873F800802884 /* YS Display-Bold.ttf */; };
 		969767D528F873F800802884 /* YS Display-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 969767D328F873F800802884 /* YS Display-Medium.ttf */; };
@@ -41,7 +40,6 @@
 		961CA6EE290D674C005855F4 /* StatisticService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticService.swift; sourceTree = "<group>"; };
 		961CA6F0290D678A005855F4 /* StatisticServiceProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticServiceProtocol.swift; sourceTree = "<group>"; };
 		961CA6F2290D6883005855F4 /* GameRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameRecord.swift; sourceTree = "<group>"; };
-		961CA6F4290EAF0A005855F4 /* Date+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Formatting.swift"; sourceTree = "<group>"; };
 		964F19D5290D556600BA4D0C /* ParseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseError.swift; sourceTree = "<group>"; };
 		969767D228F873F800802884 /* YS Display-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Bold.ttf"; sourceTree = "<group>"; };
 		969767D328F873F800802884 /* YS Display-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Medium.ttf"; sourceTree = "<group>"; };
@@ -176,7 +174,6 @@
 				AD77F5732857F8810062FB14 /* Date+Extensions.swift */,
 				9697BB8D290CEFCD0036283E /* FileManagerError.swift */,
 				964F19D5290D556600BA4D0C /* ParseError.swift */,
-				961CA6F4290EAF0A005855F4 /* Date+Formatting.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -277,7 +274,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				961CA6F5290EAF0A005855F4 /* Date+Formatting.swift in Sources */,
 				AD5EE5DE284D7887003966EF /* UIColor+Extensions.swift in Sources */,
 				AD7AFA552836189F00399704 /* Array+Extensions.swift in Sources */,
 				961CA6EF290D674C005855F4 /* StatisticService.swift in Sources */,

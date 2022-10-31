@@ -29,6 +29,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         questionFactory?.requestNextQuestion()
         
         statisticService = StatisticService()
+        
+        makeCornersToImageView()
     }
 
     @IBAction private func noButtonClicked(_ sender: UIButton) {
@@ -66,16 +68,15 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     }
     
     private func showAnswerResults(isCorrect: Bool) {
-        imageView.layer.masksToBounds = true
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        imageView.layer.cornerRadius = 20
         
         toggleButtons(state: false)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
             self.toggleButtons(state: true)
-            if !self.isLastQuestion {
+            
+            guard self.isLastQuestion else {
                 self.showNextQuestion()
                 return
             }
@@ -99,7 +100,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
             """
                 Ваш результат \(correctAnswers)/10
                 Количество сыгранных квизов: \(statisticService.gamesCount)
-                Рекорд \(bestGame.correct)/\(bestGame.total) (\(bestGame.date.formatTo("dd.MM.yy HH:mm")))
+                Рекорд \(bestGame.correct)/\(bestGame.total) (\(bestGame.date.dateTimeString))
                 Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy * 100))%
             """,
             buttonText: "Сыграть еще раз"
@@ -107,9 +108,9 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         alertPresenter?.requestPresentAlert(resultModel) { [weak self] _ in
             guard let self = self else { return }
             self.currentQuestionIndex = 0
+            self.correctAnswers = 0
             self.questionFactory?.requestNextQuestion()
         }
-        correctAnswers = 0
     }
     
     private func verifyCorrectness(statement: Bool) {
@@ -137,19 +138,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         }, completion: nil)
     }
     
-    private func decodeMoviesFromFile() {
-        let fileManager = FileManager.default
-        var documentUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
-        let textFile = "top250MoviesIMDB.json"
-        documentUrl.appendPathComponent(textFile)
-        
-        let jsonString = try! String(contentsOf: documentUrl)
-        let data = jsonString.data(using: .utf8)!
-        
-        do {
-            let movies = try JSONDecoder().decode(Top.self, from: data)
-        } catch {
-            print("failed to parse: \(error)")
-        }
+    private func makeCornersToImageView() {
+        imageView.layer.masksToBounds = true
+        imageView.layer.cornerRadius = 20
     }
 }
