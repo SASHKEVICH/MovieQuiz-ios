@@ -56,7 +56,7 @@
                                         <rect key="frame" x="0.0" y="624.5" width="374" height="103.5"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Рейтинг этого фильма меньше 5?" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dis-3y-jKa" userLabel="Question Label">
-                                                <rect key="frame" x="42" y="13" width="290" height="77.5"/>
+                                                <rect key="frame" x="42" y="8" width="290" height="87.5"/>
                                                 <fontDescription key="fontDescription" name="YSDisplay-Bold" family="YS Display" pointSize="23"/>
                                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <nil key="highlightedColor"/>
@@ -64,9 +64,9 @@
                                         </subviews>
                                         <constraints>
                                             <constraint firstAttribute="trailing" secondItem="dis-3y-jKa" secondAttribute="trailing" constant="42" id="5cm-SP-CPG"/>
-                                            <constraint firstAttribute="bottom" secondItem="dis-3y-jKa" secondAttribute="bottom" constant="13" id="CRX-tF-eto"/>
+                                            <constraint firstAttribute="bottom" secondItem="dis-3y-jKa" secondAttribute="bottom" constant="8" id="CRX-tF-eto"/>
                                             <constraint firstItem="dis-3y-jKa" firstAttribute="leading" secondItem="WIB-6m-cHD" secondAttribute="leading" constant="42" id="Rg9-vx-CJL"/>
-                                            <constraint firstItem="dis-3y-jKa" firstAttribute="top" secondItem="WIB-6m-cHD" secondAttribute="top" constant="13" id="szU-P7-SEh"/>
+                                            <constraint firstItem="dis-3y-jKa" firstAttribute="top" secondItem="WIB-6m-cHD" secondAttribute="top" constant="8" id="szU-P7-SEh"/>
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="oI7-lH-5Or">
@@ -119,10 +119,10 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="black"/>
                         <constraints>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="BDw-Qa-dIy" secondAttribute="bottom" id="GZN-wF-Ewn"/>
                             <constraint firstItem="BDw-Qa-dIy" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="IEr-Et-8np"/>
                             <constraint firstItem="BDw-Qa-dIy" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="bYk-rd-gwR"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="BDw-Qa-dIy" secondAttribute="trailing" constant="20" id="lur-9i-CM0"/>
-                            <constraint firstItem="ymj-Xy-yat" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="yVx-0f-8Nj"/>
                         </constraints>
                     </view>
                     <connections>
