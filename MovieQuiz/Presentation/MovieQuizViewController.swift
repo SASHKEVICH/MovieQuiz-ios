@@ -6,6 +6,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet private weak var noButton: UIButton!
     @IBOutlet private weak var yesButton: UIButton!
+    @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     private var alertPresenter: AlertPresenter?
     private var questionFactory: QuestionFactoryProtocol?
@@ -28,6 +29,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         statisticService = StatisticService()
         
+        tryReloadData()
+        
         makeCornersToImageView()
     }
 
@@ -43,6 +46,15 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     func didRecieveNextQuestion(question: QuizQuestion?) {
         guard let question = question else { return }
         prepareView(question: question)
+    }
+    
+    func didLoadDataFromServer() {
+        hideLoadingIndicator()
+        questionFactory?.requestNextQuestion()
+    }
+    
+    func didFailToLoadData(with error: Error) {
+        showNetworkError(message: error.localizedDescription)
     }
     
     // MARK: - AlertPresenterDelegate
@@ -118,7 +130,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     }
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        let image = UIImage(named: model.image) ?? UIImage()
+        let image = UIImage(data: model.image) ?? UIImage()
         
         return QuizStepViewModel(
             image: image,
@@ -139,5 +151,33 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     private func makeCornersToImageView() {
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = 20
+    }
+    
+    private func showNetworkError(message: String) {
+        hideLoadingIndicator()
+        
+        let errorModel = QuizResultViewModel(
+            title: "Ошибка загрузки",
+            text: "",
+            buttonText: "Попробовать еще раз")
+        alertPresenter?.requestPresentAlert(errorModel) { [weak self] _ in
+            guard let self = self else { return }
+            self.tryReloadData()
+        }
+    }
+    
+    private func tryReloadData() {
+        questionFactory?.loadData()
+        showLoadingIndicator()
+    }
+    
+    private func showLoadingIndicator() {
+        activityIndicator.isHidden = false
+        activityIndicator.startAnimating()
+    }
+    
+    private func hideLoadingIndicator() {
+        activityIndicator.isHidden = true
+        activityIndicator.stopAnimating()
     }
 }
