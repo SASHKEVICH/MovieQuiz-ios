@@ -30,6 +30,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         statisticService = StatisticService()
         
         tryReloadData()
+        activityIndicator.hidesWhenStopped = true
         
         makeCornersToImageView()
     }
@@ -46,6 +47,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     func didRecieveNextQuestion(question: QuizQuestion?) {
         guard let question = question else { return }
         prepareView(question: question)
+        hideLoadingIndicator()
     }
     
     func didLoadDataFromServer() {
@@ -97,6 +99,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     private func showNextQuestion() {
         currentQuestionIndex += 1
         questionFactory?.requestNextQuestion()
+        showLoadingIndicator()
     }
     
     private func showResults() {
@@ -177,7 +180,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     }
     
     private func hideLoadingIndicator() {
-        activityIndicator.isHidden = true
         activityIndicator.stopAnimating()
     }
 }
