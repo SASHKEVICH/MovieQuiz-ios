@@ -12,8 +12,18 @@ protocol MoviesLoading {
 }
 
 struct MoviesLoader: MoviesLoading {
-    private enum LoadingError: Error {
+    private enum LoadingError: Error, LocalizedError {
         case invalidAPIKey
+        case invalidAPI
+        
+        public var errorDescription: String? {
+            switch self {
+            case .invalidAPIKey:
+                return NSLocalizedString("Invalid API Key", comment: "")
+            case .invalidAPI:
+                return NSLocalizedString("Maybe ImDb changed their api...", comment: "")
+            }
+        }
     }
     
     // MARK: - Network Client
@@ -34,8 +44,12 @@ struct MoviesLoader: MoviesLoading {
                 handler(.failure(error))
                 print(error)
             case .success(let data):
-                guard let movies = try? JSONDecoder().decode(MostPopularMovies.self, from: data) else { return }
-                guard movies.errorMessage != "Invalid API Key" || movies.items.isEmpty else {
+                guard let movies = try? JSONDecoder().decode(MostPopularMovies.self, from: data) else {
+                    handler(.failure(LoadingError.invalidAPI))
+                    return
+                }
+                    
+                guard !movies.items.isEmpty else {
                     handler(.failure(LoadingError.invalidAPIKey))
                     return
                 }

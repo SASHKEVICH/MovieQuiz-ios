@@ -161,7 +161,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         
         let errorModel = QuizResultViewModel(
             title: "Ошибка загрузки",
-            text: "",
+            text: message,
             buttonText: "Попробовать еще раз")
         alertPresenter?.requestPresentAlert(errorModel) { [weak self] _ in
             guard let self = self else { return }
