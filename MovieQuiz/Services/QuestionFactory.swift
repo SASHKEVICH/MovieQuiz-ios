@@ -50,6 +50,16 @@ class QuestionFactory: QuestionFactoryProtocol {
 //            text: "Рейтинг этого фильма больше чем 6?",
 //            correctAnswer: false)
 //    ]
+    private enum QuestionFactoryError: Error, LocalizedError {
+        case loadImage
+        
+        public var errorDescription: String? {
+            switch self {
+            case .loadImage:
+                return NSLocalizedString("Failed to load image", comment: "")
+            }
+        }
+    }
     
     private let moviesLoader: MoviesLoading
     private var movies: [MostPopularMovie] = []
@@ -72,7 +82,8 @@ class QuestionFactory: QuestionFactoryProtocol {
             do {
                 imageData = try Data(contentsOf: movie.resizedImageURL)
             } catch {
-                print("Failed to load image")
+                self.delegate?.didFailToLoadData(with: QuestionFactoryError.loadImage)
+                return
             }
             
             let rating = Float(movie.rating) ?? 0
