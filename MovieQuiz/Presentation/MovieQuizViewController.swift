@@ -170,8 +170,8 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     }
     
     private func tryReloadData() {
-        questionFactory?.loadData()
         showLoadingIndicator()
+        questionFactory?.loadData()
     }
     
     private func showLoadingIndicator() {
