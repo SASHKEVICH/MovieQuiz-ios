@@ -12,6 +12,10 @@ protocol MoviesLoading {
 }
 
 struct MoviesLoader: MoviesLoading {
+    private enum LoadingError: Error {
+        case invalidAPIKey
+    }
+    
     // MARK: - Network Client
     private let networkClient = NetworkClient()
     
@@ -31,6 +35,10 @@ struct MoviesLoader: MoviesLoading {
                 print(error)
             case .success(let data):
                 guard let movies = try? JSONDecoder().decode(MostPopularMovies.self, from: data) else { return }
+                guard movies.errorMessage != "Invalid API Key" || movies.items.isEmpty else {
+                    handler(.failure(LoadingError.invalidAPIKey))
+                    return
+                }
                 handler(.success(movies))
             }
         }
