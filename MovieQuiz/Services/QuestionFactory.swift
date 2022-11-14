@@ -82,7 +82,9 @@ class QuestionFactory: QuestionFactoryProtocol {
             do {
                 imageData = try Data(contentsOf: movie.resizedImageURL)
             } catch {
-                self.delegate?.didFailToLoadData(with: QuestionFactoryError.loadImage)
+                DispatchQueue.main.async { [weak self] in
+                    self?.delegate?.didFailToLoadData(with: QuestionFactoryError.loadImage)
+                }
                 return
             }
             
