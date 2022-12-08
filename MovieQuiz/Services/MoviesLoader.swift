@@ -1,5 +1,5 @@
 //
-//  MovieLoader.swift
+//  MoviesLoader.swift
 //  MovieQuiz
 //
 //  Created by Александр Бекренев on 11.11.2022.
@@ -26,8 +26,12 @@ struct MoviesLoader: MoviesLoading {
         }
     }
     
+    init(networkClient: NetworkRouting = NetworkClient()) {
+        self.networkClient = networkClient
+    }
+    
     // MARK: - Network Client
-    private let networkClient = NetworkClient()
+    private let networkClient: NetworkRouting
     
     // MARK: - URL
     private var mostPopularMoviesURL: URL {
