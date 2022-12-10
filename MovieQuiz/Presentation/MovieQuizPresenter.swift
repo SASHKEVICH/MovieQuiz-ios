@@ -14,6 +14,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     weak var viewController: MovieQuizViewController?
     private var questionFactory: QuestionFactoryProtocol?
+    private let statisticService: StatisticServiceProtocol?
     
     let questionsAmount: Int = 10
     
@@ -23,6 +24,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     init(viewController: MovieQuizViewController) {
         self.viewController = viewController
+        statisticService = StatisticService()
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
     }
     
@@ -64,6 +66,24 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
     
+    func makeResultsMessage() -> String {
+        guard let statisticService = statisticService else { return "" }
+
+        statisticService.store(correct: correctAnswers, total: questionsAmount)
+        
+        let bestGame = statisticService.bestGame
+        let totalPlaysCountLine = "Количество сыгранных квизов: \(statisticService.gamesCount)"
+        let currentGameResultLine = "Ваш результат: \(correctAnswers)/\(questionsAmount)"
+        let bestGameInfoLine = "Рекорд: \(bestGame.correct)/\(bestGame.total)" + "(\(bestGame.date.dateTimeString))"
+        let averageAccuracyLine = "Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy))%"
+        
+        let resultMessage = [
+            currentGameResultLine, totalPlaysCountLine, bestGameInfoLine, averageAccuracyLine
+        ].joined(separator: "\n")
+        
+        return resultMessage
+    }
+    
     func restartGame() {
         resetQuestionIndex()
         resetCorrectAnswers()
@@ -82,7 +102,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         let isCorrectAnswer = currentQuestion?.correctAnswer == isYes
         didAnswer(isCorrectAnswer: isCorrectAnswer)
         viewController?.showQuestionResultOnImageView(isCorrect: isCorrectAnswer)
-        showNextQuestionOrResults()
     }
     
     // MARK: - QuestionFactoryDelegate
@@ -114,9 +133,11 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     func yesButtonClicked() {
         verifyCorrectness(isYes: true)
+        showNextQuestionOrResults()
     }
     
     func noButtonClicked() {
         verifyCorrectness(isYes: false)
+        showNextQuestionOrResults()
     }
 }

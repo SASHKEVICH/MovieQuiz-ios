@@ -41,7 +41,7 @@ final class StatisticService: StatisticServiceProtocol {
     private(set) var totalAccuracy: Double {
         get {
             let data = userDefaults.double(forKey: Keys.accuracy.rawValue)
-            return data
+            return data * 100
         }
         set {
             userDefaults.set(newValue, forKey: Keys.accuracy.rawValue)

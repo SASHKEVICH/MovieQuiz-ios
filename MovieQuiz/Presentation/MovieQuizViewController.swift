@@ -9,14 +9,12 @@ final class MovieQuizViewController: UIViewController, AlertPresenterDelegate {
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     private var alertPresenter: AlertPresenter?
-    private var statisticService: StatisticService?
     private var presenter: MovieQuizPresenter?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         alertPresenter = AlertPresenter(delegate: self)
-        statisticService = StatisticService()
         
         activityIndicator.hidesWhenStopped = true
         
@@ -51,19 +49,12 @@ final class MovieQuizViewController: UIViewController, AlertPresenterDelegate {
     }
     
     func showResults() {
-        guard let statisticService = statisticService, let presenter = presenter else { return }
-        statisticService.store(correct: presenter.correctAnswers, total: presenter.questionsAmount)
+        guard let presenter = presenter else { return }
         
-        let bestGame = statisticService.bestGame
+        let alertResultsText = presenter.makeResultsMessage()
         let resultModel = QuizResultViewModel(
             title: "Этот раунд окончен!",
-            text:
-            """
-                Ваш результат \(presenter.correctAnswers)/10
-                Количество сыгранных квизов: \(statisticService.gamesCount)
-                Рекорд \(bestGame.correct)/\(bestGame.total) (\(bestGame.date.dateTimeString))
-                Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy * 100))%
-            """,
+            text: alertResultsText,
             buttonText: "Сыграть еще раз"
         )
         alertPresenter?.requestPresentAlert(resultModel) { [weak self] _ in
