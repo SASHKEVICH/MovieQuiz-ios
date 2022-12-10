@@ -52,7 +52,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         }
     }
     
-    func showNextQuestionOrResults() {
+    func proceedToNextQuestionOrResults() {
         viewController?.toggleButtons(state: false)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
             guard let self = self else { return }
@@ -101,7 +101,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     private func verifyCorrectness(isYes: Bool) {
         let isCorrectAnswer = currentQuestion?.correctAnswer == isYes
         didAnswer(isCorrectAnswer: isCorrectAnswer)
-        viewController?.showQuestionResultOnImageView(isCorrect: isCorrectAnswer)
+        viewController?.highlightImageBorder(isCorrect: isCorrectAnswer)
     }
     
     // MARK: - QuestionFactoryDelegate
@@ -133,11 +133,11 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     func yesButtonClicked() {
         verifyCorrectness(isYes: true)
-        showNextQuestionOrResults()
+        proceedToNextQuestionOrResults()
     }
     
     func noButtonClicked() {
         verifyCorrectness(isYes: false)
-        showNextQuestionOrResults()
+        proceedToNextQuestionOrResults()
     }
 }

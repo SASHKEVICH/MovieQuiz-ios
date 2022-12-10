@@ -109,7 +109,7 @@ final class MovieQuizViewController: UIViewController, AlertPresenterDelegate {
         imageView.layer.borderWidth = 0
     }
     
-    func showQuestionResultOnImageView(isCorrect: Bool) {
+    func highlightImageBorder(isCorrect: Bool) {
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
     }
