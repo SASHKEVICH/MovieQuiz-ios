@@ -14,7 +14,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     private let presenter = MovieQuizPresenter()
     
     private var currentQuestion: QuizQuestion?
-    
     private var correctAnswers: Int = 0
     
     // MARK: - Lifecycle
@@ -28,15 +27,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         tryReloadData()
         activityIndicator.hidesWhenStopped = true
         
+        presenter.viewContoller = self
         makeCornersToImageView()
     }
 
     @IBAction private func noButtonClicked(_ sender: UIButton) {
-        verifyCorrectness(statement: false)
+        presenter.noButtonClicked()
     }
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
-        verifyCorrectness(statement: true)
+        presenter.yesButtonClicked()
     }
     
     // MARK: - QuestionFactoryDelegate
@@ -67,7 +67,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     }
     
     private func prepareView(question: QuizQuestion) {
-        currentQuestion = question
+        presenter.currentQuestion = question
         let viewModel = presenter.convert(model: question)
         imageView.layer.borderWidth = 0
         DispatchQueue.main.async { [weak self] in
@@ -75,9 +75,11 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         }
     }
     
-    private func showAnswerResults(isCorrect: Bool) {
+    func showAnswerResults(isCorrect: Bool) {
         imageView.layer.borderWidth = 8
         imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
+        
+        if isCorrect { correctAnswers += 1 }
         
         toggleButtons(state: false)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
@@ -120,12 +122,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
             self.correctAnswers = 0
             self.questionFactory?.requestNextQuestion()
         }
-    }
-    
-    private func verifyCorrectness(statement: Bool) {
-        let isCorrect = currentQuestion?.correctAnswer == statement
-        if isCorrect { correctAnswers += 1 }
-        showAnswerResults(isCorrect: isCorrect)
     }
     
     private func toggleButtons(state: Bool) {
