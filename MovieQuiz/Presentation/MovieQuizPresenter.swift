@@ -28,7 +28,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
     }
     
-    func convert(model: QuizQuestion) -> QuizStepViewModel {
+    private func convert(model: QuizQuestion) -> QuizStepViewModel {
         let image = UIImage(data: model.image) ?? UIImage()
         
         return QuizStepViewModel(
@@ -43,7 +43,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         viewController?.hideLoadingIndicator()
     }
     
-    func prepareView(question: QuizQuestion) {
+    private func prepareView(question: QuizQuestion) {
         currentQuestion = question
         let viewModel = convert(model: question)
         viewController?.resetImageBorder()
@@ -98,6 +98,10 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         questionFactory?.requestNextQuestion()
     }
     
+    private func didAnswer(isCorrectAnswer: Bool) {
+        if isCorrectAnswer { correctAnswers += 1 }
+    }
+    
     private func verifyCorrectness(isYes: Bool) {
         let isCorrectAnswer = currentQuestion?.correctAnswer == isYes
         didAnswer(isCorrectAnswer: isCorrectAnswer)
@@ -125,10 +129,6 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     
     func switchToNextQuestion() {
         currentQuestionIndex += 1
-    }
-    
-    func didAnswer(isCorrectAnswer: Bool) {
-        if isCorrectAnswer { correctAnswers += 1 }
     }
     
     func yesButtonClicked() {
