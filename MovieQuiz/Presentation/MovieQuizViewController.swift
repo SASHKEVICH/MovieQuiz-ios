@@ -13,9 +13,6 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     private var statisticService: StatisticService?
     private let presenter = MovieQuizPresenter()
     
-    private var currentQuestion: QuizQuestion?
-    private var correctAnswers: Int = 0
-    
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +24,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         tryReloadData()
         activityIndicator.hidesWhenStopped = true
         
-        presenter.viewContoller = self
+        presenter.viewController = self
         makeCornersToImageView()
     }
 
@@ -41,9 +38,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     
     // MARK: - QuestionFactoryDelegate
     func didRecieveNextQuestion(question: QuizQuestion?) {
-        guard let question = question else { return }
-        prepareView(question: question)
-        hideLoadingIndicator()
+        presenter.didRecieveNextQuestion(question: question)
     }
     
     func didLoadDataFromServer() {
@@ -60,56 +55,28 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         present(alert, animated: true, completion: nil)
     }
     
-    private func show(quiz step: QuizStepViewModel) {
+    func show(quiz step: QuizStepViewModel) {
         imageView.image = step.image
         questionLabel.text = step.question
         counterLabel.text = step.questionNumber
     }
     
-    private func prepareView(question: QuizQuestion) {
-        presenter.currentQuestion = question
-        let viewModel = presenter.convert(model: question)
-        imageView.layer.borderWidth = 0
-        DispatchQueue.main.async { [weak self] in
-            self?.show(quiz: viewModel)
-        }
-    }
-    
-    func showAnswerResults(isCorrect: Bool) {
-        imageView.layer.borderWidth = 8
-        imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
-        
-        if isCorrect { correctAnswers += 1 }
-        
-        toggleButtons(state: false)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
-            guard let self = self else { return }
-            self.toggleButtons(state: true)
-            
-            guard self.presenter.isLastQuestion else {
-                self.showNextQuestion()
-                return
-            }
-            self.showResults()
-        }
-    }
-    
-    private func showNextQuestion() {
+    func showNextQuestion() {
         presenter.switchToNextQuestion()
         questionFactory?.requestNextQuestion()
         showLoadingIndicator()
     }
     
-    private func showResults() {
+    func showResults() {
         guard let statisticService = statisticService else { return }
-        statisticService.store(correct: correctAnswers, total: presenter.questionsAmount)
+        statisticService.store(correct: presenter.correctAnswers, total: presenter.questionsAmount)
         
         let bestGame = statisticService.bestGame
         let resultModel = QuizResultViewModel(
             title: "Этот раунд окончен!",
             text:
             """
-                Ваш результат \(correctAnswers)/10
+                Ваш результат \(presenter.correctAnswers)/10
                 Количество сыгранных квизов: \(statisticService.gamesCount)
                 Рекорд \(bestGame.correct)/\(bestGame.total) (\(bestGame.date.dateTimeString))
                 Средняя точность: \(String(format: "%.2f", statisticService.totalAccuracy * 100))%
@@ -119,12 +86,12 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         alertPresenter?.requestPresentAlert(resultModel) { [weak self] _ in
             guard let self = self else { return }
             self.presenter.resetQuestionIndex()
-            self.correctAnswers = 0
+            self.presenter.resetCorrectAnswers()
             self.questionFactory?.requestNextQuestion()
         }
     }
     
-    private func toggleButtons(state: Bool) {
+    func toggleButtons(state: Bool) {
         noButton.isEnabled = state
         yesButton.isEnabled = state
         
@@ -162,7 +129,16 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         activityIndicator.startAnimating()
     }
     
-    private func hideLoadingIndicator() {
+    func hideLoadingIndicator() {
         activityIndicator.stopAnimating()
+    }
+    
+    func resetImageBorder() {
+        imageView.layer.borderWidth = 0
+    }
+    
+    func showQuestionResultOnImageView(isCorrect: Bool) {
+        imageView.layer.borderWidth = 8
+        imageView.layer.borderColor = isCorrect ? UIColor.ypGreen.cgColor : UIColor.ypRed.cgColor
     }
 }

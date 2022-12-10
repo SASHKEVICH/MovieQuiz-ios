@@ -10,8 +10,9 @@ import UIKit
 final class MovieQuizPresenter {
     var currentQuestion: QuizQuestion?
     private var currentQuestionIndex: Int = 0
+    private(set) var correctAnswers: Int = 0
     
-    weak var viewContoller: MovieQuizViewController?
+    weak var viewController: MovieQuizViewController?
     
     let questionsAmount: Int = 10
     
@@ -28,8 +29,41 @@ final class MovieQuizPresenter {
             questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)")
     }
     
+    func didRecieveNextQuestion(question: QuizQuestion?) {
+        guard let question = question else { return }
+        prepareView(question: question)
+        viewController?.hideLoadingIndicator()
+    }
+    
+    func prepareView(question: QuizQuestion) {
+        currentQuestion = question
+        let viewModel = convert(model: question)
+        viewController?.resetImageBorder()
+        DispatchQueue.main.async { [weak self] in
+            self?.viewController?.show(quiz: viewModel)
+        }
+    }
+    
+    func showNextQuestionOrResults() {
+        viewController?.toggleButtons(state: false)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) { [weak self] in
+            guard let self = self else { return }
+            self.viewController?.toggleButtons(state: true)
+            
+            guard self.isLastQuestion else {
+                self.viewController?.showNextQuestion()
+                return
+            }
+            self.viewController?.showResults()
+        }
+    }
+    
     func resetQuestionIndex() {
         currentQuestionIndex = 0
+    }
+    
+    func resetCorrectAnswers() {
+        correctAnswers = 0
     }
     
     func switchToNextQuestion() {
@@ -46,6 +80,8 @@ final class MovieQuizPresenter {
     
     private func verifyCorrectness(isYes: Bool) {
         let isCorrect = currentQuestion?.correctAnswer == isYes
-        viewContoller?.showAnswerResults(isCorrect: isCorrect)
+        if isCorrect { correctAnswers += 1 }
+        viewController?.showQuestionResultOnImageView(isCorrect: isCorrect)
+        showNextQuestionOrResults()
     }
 }
