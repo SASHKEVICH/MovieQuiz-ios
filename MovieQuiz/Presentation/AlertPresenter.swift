@@ -30,6 +30,7 @@ class AlertPresenter {
             title: result.title,
             message: result.message,
             preferredStyle: .alert)
+        alert.view.accessibilityIdentifier = "Alert"
         
         let alertAction = UIAlertAction(title: result.buttonText,
                                         style: .default,
