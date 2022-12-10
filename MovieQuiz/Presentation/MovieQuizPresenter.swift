@@ -12,7 +12,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     private var currentQuestionIndex: Int = 0
     private(set) var correctAnswers: Int = 0
     
-    weak var viewController: MovieQuizViewController?
+    weak var viewController: MovieQuizViewControllerProtocol?
     private var questionFactory: QuestionFactoryProtocol?
     private let statisticService: StatisticServiceProtocol?
     
@@ -22,13 +22,13 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
         currentQuestionIndex == questionsAmount - 1
     }
     
-    init(viewController: MovieQuizViewController) {
+    init(viewController: MovieQuizViewControllerProtocol) {
         self.viewController = viewController
         statisticService = StatisticService()
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
     }
     
-    private func convert(model: QuizQuestion) -> QuizStepViewModel {
+    func convert(model: QuizQuestion) -> QuizStepViewModel {
         let image = UIImage(data: model.image) ?? UIImage()
         
         return QuizStepViewModel(
@@ -59,7 +59,9 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
             self.viewController?.toggleButtons(state: true)
             
             guard self.isLastQuestion else {
-                self.viewController?.showNextQuestion()
+                self.switchToNextQuestion()
+                self.requestNextQuestion()
+                self.viewController?.showLoadingIndicator()
                 return
             }
             self.viewController?.showResults()
@@ -91,6 +93,7 @@ final class MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     func reloadData() {
+        viewController?.showLoadingIndicator()
         questionFactory?.loadData()
     }
     

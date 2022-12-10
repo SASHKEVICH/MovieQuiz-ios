@@ -12,6 +12,8 @@
 		961CA6F3290D6883005855F4 /* GameRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 961CA6F2290D6883005855F4 /* GameRecord.swift */; };
 		964F19D6290D556600BA4D0C /* ParseError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 964F19D5290D556600BA4D0C /* ParseError.swift */; };
 		9660D6442944400F00C5198D /* MovieQuizPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9660D6432944400F00C5198D /* MovieQuizPresenter.swift */; };
+		9660D64629446C9000C5198D /* MovieQuizViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9660D64529446C9000C5198D /* MovieQuizViewControllerProtocol.swift */; };
+		9660D64829446E8300C5198D /* MovieQuizPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9660D64729446E8300C5198D /* MovieQuizPresenterTests.swift */; };
 		969767D428F873F800802884 /* YS Display-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 969767D228F873F800802884 /* YS Display-Bold.ttf */; };
 		969767D528F873F800802884 /* YS Display-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 969767D328F873F800802884 /* YS Display-Medium.ttf */; };
 		9697BB7A290AE71B0036283E /* QuestionFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9697BB79290AE71B0036283E /* QuestionFactory.swift */; };
@@ -66,6 +68,8 @@
 		961CA6F2290D6883005855F4 /* GameRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameRecord.swift; sourceTree = "<group>"; };
 		964F19D5290D556600BA4D0C /* ParseError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParseError.swift; sourceTree = "<group>"; };
 		9660D6432944400F00C5198D /* MovieQuizPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieQuizPresenter.swift; sourceTree = "<group>"; };
+		9660D64529446C9000C5198D /* MovieQuizViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieQuizViewControllerProtocol.swift; sourceTree = "<group>"; };
+		9660D64729446E8300C5198D /* MovieQuizPresenterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieQuizPresenterTests.swift; sourceTree = "<group>"; };
 		969767D228F873F800802884 /* YS Display-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Bold.ttf"; sourceTree = "<group>"; };
 		969767D328F873F800802884 /* YS Display-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "YS Display-Medium.ttf"; sourceTree = "<group>"; };
 		9697BB79290AE71B0036283E /* QuestionFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestionFactory.swift; sourceTree = "<group>"; };
@@ -130,6 +134,7 @@
 			isa = PBXGroup;
 			children = (
 				9697BB85290C239C0036283E /* AlertPresenter.swift */,
+				9660D64529446C9000C5198D /* MovieQuizViewControllerProtocol.swift */,
 				9660D6432944400F00C5198D /* MovieQuizPresenter.swift */,
 				AD1ABAB52831907B00B3E448 /* MovieQuizViewController.swift */,
 				AD1ABAB72831907B00B3E448 /* Main.storyboard */,
@@ -192,6 +197,7 @@
 			children = (
 				9698C3B429422FCC002D710A /* ArrayTests.swift */,
 				9698C3B629423497002D710A /* MoviesLoaderTests.swift */,
+				9660D64729446E8300C5198D /* MovieQuizPresenterTests.swift */,
 			);
 			path = MovieQuizTests;
 			sourceTree = "<group>";
@@ -407,6 +413,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9698C3B529422FCC002D710A /* ArrayTests.swift in Sources */,
+				9660D64829446E8300C5198D /* MovieQuizPresenterTests.swift in Sources */,
 				9698C3B729423497002D710A /* MoviesLoaderTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -439,6 +446,7 @@
 				AD77F5742857F8810062FB14 /* Date+Extensions.swift in Sources */,
 				9697BB86290C239C0036283E /* AlertPresenter.swift in Sources */,
 				AD1ABAB22831907B00B3E448 /* AppDelegate.swift in Sources */,
+				9660D64629446C9000C5198D /* MovieQuizViewControllerProtocol.swift in Sources */,
 				961CA6F3290D6883005855F4 /* GameRecord.swift in Sources */,
 				964F19D6290D556600BA4D0C /* ParseError.swift in Sources */,
 				961CA6F1290D678A005855F4 /* StatisticServiceProtocol.swift in Sources */,

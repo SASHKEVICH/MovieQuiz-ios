@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController, AlertPresenterDelegate {
+final class MovieQuizViewController: UIViewController, MovieQuizViewControllerProtocol, AlertPresenterDelegate {
     @IBOutlet private weak var questionLabel: UILabel!
     @IBOutlet private weak var counterLabel: UILabel!
     @IBOutlet private weak var imageView: UIImageView!
@@ -40,12 +40,6 @@ final class MovieQuizViewController: UIViewController, AlertPresenterDelegate {
         imageView.image = step.image
         questionLabel.text = step.question
         counterLabel.text = step.questionNumber
-    }
-    
-    func showNextQuestion() {
-        presenter?.switchToNextQuestion()
-        presenter?.requestNextQuestion()
-        showLoadingIndicator()
     }
     
     func showResults() {
@@ -92,11 +86,10 @@ final class MovieQuizViewController: UIViewController, AlertPresenterDelegate {
     }
     
     private func tryReloadData() {
-        showLoadingIndicator()
         presenter?.reloadData()
     }
     
-    private func showLoadingIndicator() {
+    func showLoadingIndicator() {
         activityIndicator.isHidden = false
         activityIndicator.startAnimating()
     }
