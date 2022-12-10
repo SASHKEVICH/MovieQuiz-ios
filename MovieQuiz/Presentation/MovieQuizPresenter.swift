@@ -7,17 +7,23 @@
 
 import UIKit
 
-final class MovieQuizPresenter {
+final class MovieQuizPresenter: QuestionFactoryDelegate {
     var currentQuestion: QuizQuestion?
     private var currentQuestionIndex: Int = 0
     private(set) var correctAnswers: Int = 0
     
     weak var viewController: MovieQuizViewController?
+    private var questionFactory: QuestionFactoryProtocol?
     
     let questionsAmount: Int = 10
     
     var isLastQuestion: Bool {
         currentQuestionIndex == questionsAmount - 1
+    }
+    
+    init(viewController: MovieQuizViewController) {
+        self.viewController = viewController
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
     }
     
     func convert(model: QuizQuestion) -> QuizStepViewModel {
@@ -58,6 +64,38 @@ final class MovieQuizPresenter {
         }
     }
     
+    func restartGame() {
+        resetQuestionIndex()
+        resetCorrectAnswers()
+        questionFactory?.requestNextQuestion()
+    }
+    
+    func reloadData() {
+        questionFactory?.loadData()
+    }
+    
+    func requestNextQuestion() {
+        questionFactory?.requestNextQuestion()
+    }
+    
+    private func verifyCorrectness(isYes: Bool) {
+        let isCorrectAnswer = currentQuestion?.correctAnswer == isYes
+        didAnswer(isCorrectAnswer: isCorrectAnswer)
+        viewController?.showQuestionResultOnImageView(isCorrect: isCorrectAnswer)
+        showNextQuestionOrResults()
+    }
+    
+    // MARK: - QuestionFactoryDelegate
+    func didLoadDataFromServer() {
+        viewController?.hideLoadingIndicator()
+        questionFactory?.requestNextQuestion()
+    }
+    
+    func didFailToLoadData(with error: Error) {
+        let message = error.localizedDescription
+        viewController?.showNetworkError(message: message)
+    }
+    
     func resetQuestionIndex() {
         currentQuestionIndex = 0
     }
@@ -70,18 +108,15 @@ final class MovieQuizPresenter {
         currentQuestionIndex += 1
     }
     
+    func didAnswer(isCorrectAnswer: Bool) {
+        if isCorrectAnswer { correctAnswers += 1 }
+    }
+    
     func yesButtonClicked() {
         verifyCorrectness(isYes: true)
     }
     
     func noButtonClicked() {
         verifyCorrectness(isYes: false)
-    }
-    
-    private func verifyCorrectness(isYes: Bool) {
-        let isCorrect = currentQuestion?.correctAnswer == isYes
-        if isCorrect { correctAnswers += 1 }
-        viewController?.showQuestionResultOnImageView(isCorrect: isCorrect)
-        showNextQuestionOrResults()
     }
 }

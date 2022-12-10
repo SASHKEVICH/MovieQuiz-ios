@@ -1,6 +1,6 @@
 import UIKit
 
-final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, AlertPresenterDelegate {
+final class MovieQuizViewController: UIViewController, AlertPresenterDelegate {
     @IBOutlet private weak var questionLabel: UILabel!
     @IBOutlet private weak var counterLabel: UILabel!
     @IBOutlet private weak var imageView: UIImageView!
@@ -9,45 +9,28 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     @IBOutlet private weak var activityIndicator: UIActivityIndicatorView!
     
     private var alertPresenter: AlertPresenter?
-    private var questionFactory: QuestionFactoryProtocol?
     private var statisticService: StatisticService?
-    private let presenter = MovieQuizPresenter()
+    private var presenter: MovieQuizPresenter?
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         alertPresenter = AlertPresenter(delegate: self)
-        
-        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         statisticService = StatisticService()
         
-        tryReloadData()
         activityIndicator.hidesWhenStopped = true
         
-        presenter.viewController = self
+        presenter = MovieQuizPresenter(viewController: self)
+        tryReloadData()
         makeCornersToImageView()
     }
 
     @IBAction private func noButtonClicked(_ sender: UIButton) {
-        presenter.noButtonClicked()
+        presenter?.noButtonClicked()
     }
     
     @IBAction private func yesButtonClicked(_ sender: UIButton) {
-        presenter.yesButtonClicked()
-    }
-    
-    // MARK: - QuestionFactoryDelegate
-    func didRecieveNextQuestion(question: QuizQuestion?) {
-        presenter.didRecieveNextQuestion(question: question)
-    }
-    
-    func didLoadDataFromServer() {
-        hideLoadingIndicator()
-        questionFactory?.requestNextQuestion()
-    }
-    
-    func didFailToLoadData(with error: Error) {
-        showNetworkError(message: error.localizedDescription)
+        presenter?.yesButtonClicked()
     }
     
     // MARK: - AlertPresenterDelegate
@@ -62,13 +45,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
     }
     
     func showNextQuestion() {
-        presenter.switchToNextQuestion()
-        questionFactory?.requestNextQuestion()
+        presenter?.switchToNextQuestion()
+        presenter?.requestNextQuestion()
         showLoadingIndicator()
     }
     
     func showResults() {
-        guard let statisticService = statisticService else { return }
+        guard let statisticService = statisticService, let presenter = presenter else { return }
         statisticService.store(correct: presenter.correctAnswers, total: presenter.questionsAmount)
         
         let bestGame = statisticService.bestGame
@@ -85,9 +68,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         )
         alertPresenter?.requestPresentAlert(resultModel) { [weak self] _ in
             guard let self = self else { return }
-            self.presenter.resetQuestionIndex()
-            self.presenter.resetCorrectAnswers()
-            self.questionFactory?.requestNextQuestion()
+            self.presenter?.restartGame()
         }
     }
     
@@ -106,7 +87,7 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
         imageView.layer.cornerRadius = 20
     }
     
-    private func showNetworkError(message: String) {
+    func showNetworkError(message: String) {
         hideLoadingIndicator()
         
         let errorModel = QuizResultViewModel(
@@ -115,13 +96,13 @@ final class MovieQuizViewController: UIViewController, QuestionFactoryDelegate, 
             buttonText: "Попробовать еще раз")
         alertPresenter?.requestPresentAlert(errorModel) { [weak self] _ in
             guard let self = self else { return }
-            self.tryReloadData()
+            self.presenter?.restartGame()
         }
     }
     
     private func tryReloadData() {
         showLoadingIndicator()
-        questionFactory?.loadData()
+        presenter?.reloadData()
     }
     
     private func showLoadingIndicator() {
