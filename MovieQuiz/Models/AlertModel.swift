@@ -5,7 +5,6 @@
 //  Created by Александр Бекренев on 28.10.2022.
 //
 
-import Foundation
 import UIKit
 
 struct AlertModel {

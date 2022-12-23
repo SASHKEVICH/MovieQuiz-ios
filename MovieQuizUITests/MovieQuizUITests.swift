@@ -66,7 +66,7 @@ class MovieQuizUITests: XCTestCase {
         XCTAssert(alert.buttons.firstMatch.label == "Сыграть еще раз")
     }
     
-    func testAlertDissapear() {
+    func testAlertDisappear() {
         for _ in 1...10 {
             app.buttons["No"].tap()
             sleep(3)

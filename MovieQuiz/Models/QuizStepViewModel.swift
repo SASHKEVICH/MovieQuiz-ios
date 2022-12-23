@@ -5,7 +5,6 @@
 //  Created by Александр Бекренев on 27.10.2022.
 //
 
-import Foundation
 import UIKit
 
 struct QuizStepViewModel {
